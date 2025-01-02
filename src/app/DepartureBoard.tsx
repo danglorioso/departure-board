@@ -12,7 +12,7 @@ const DepartureBoard: React.FC = () => {
         <div className="flex-col items-center justify-center h-full w-11/12 max-w-4xl">
 
             {/* Refresh Button */}
-            <div className="flex justify-end mb-2 mx-3">
+            <div className="flex justify-end mb-2 mx-2">
                 <button
                     onClick={handleRefresh}
                     className="flex items-center gap-2 text-gray-400 hover:text-white text-sm font-medium transition duration-200"
