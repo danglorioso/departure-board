@@ -10,7 +10,7 @@ const DepartureBoard: React.FC = () => {
         </div>
         <div className="p-6">
           <p className="text-neutral-300">
-            Flight information will appear here. Customize this section to display your data.
+            Flight information will appear here. Coming soon.
           </p>
         </div>
       </div>
