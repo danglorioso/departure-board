@@ -1,7 +1,7 @@
 // components/DepartureBoard.tsx
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FiRefreshCw } from 'react-icons/fi';
 import FlightRow, { Flight } from './FlightRow';
 import AirportSelector from './AirportSelector';
@@ -38,11 +38,7 @@ const DepartureBoard: React.FC = () => {
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [viewMode, setViewMode] = useState<'departures' | 'arrivals'>('departures');
 
-  useEffect(() => {
-    fetchFlights();
-  }, [selectedAirport, viewMode]);
-
-  const fetchFlights = () => {
+  const fetchFlights = useCallback(() => {
     setIsLoading(true);
     
     // Simulate API fetch with a timeout
@@ -62,7 +58,11 @@ const DepartureBoard: React.FC = () => {
     //  })
     //  .catch(error => console.error('Error fetching flight data:', error))
     //  .finally(() => setIsLoading(false));
-  };
+  }, [selectedAirport]);
+
+  useEffect(() => {
+    fetchFlights();
+  }, [selectedAirport, viewMode, fetchFlights]);
 
   const handleRefresh = () => {
     fetchFlights();
