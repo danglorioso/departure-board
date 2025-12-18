@@ -5,6 +5,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { FiRefreshCw } from 'react-icons/fi';
 import FlightRow, { Flight } from './FlightRow';
 import AirportSelector from './AirportSelector';
+import DigitalClock from './DigitalClock';
 
 // Mock data until we connect to a real API
 const airports = [
@@ -17,26 +18,46 @@ const airports = [
 
 const mockFlights: Record<string, Flight[]> = {
   'JFK': [
-    { id: '1', flightNumber: 'BA112', airline: 'British Airways', destination: 'London', scheduledTime: '10:30', status: 'On Time', gate: 'A12' },
-    { id: '2', flightNumber: 'DL401', airline: 'Delta', destination: 'Paris', scheduledTime: '11:15', status: 'Delayed', gate: 'B5' },
-    { id: '3', flightNumber: 'AA189', airline: 'American', destination: 'Miami', scheduledTime: '12:00', status: 'Boarding', gate: 'C7' },
-    { id: '4', flightNumber: 'UA872', airline: 'United', destination: 'Chicago', scheduledTime: '12:45', status: 'On Time', gate: 'D3' },
-    { id: '5', flightNumber: 'LH411', airline: 'Lufthansa', destination: 'Frankfurt', scheduledTime: '13:20', status: 'On Time', gate: 'E9' },
+    { id: '1', flightNumber: 'BA112', airline: 'British Airways', destination: 'LONDON', scheduledTime: '10:30', status: 'ON TIME', gate: 'A12' },
+    { id: '2', flightNumber: 'DL401', airline: 'Delta', destination: 'PARIS', scheduledTime: '11:15', status: 'DELAYED', gate: 'B5' },
+    { id: '3', flightNumber: 'AA189', airline: 'American', destination: 'MIAMI', scheduledTime: '12:00', status: 'BOARDING', gate: 'C7' },
+    { id: '4', flightNumber: 'UA872', airline: 'United', destination: 'CHICAGO', scheduledTime: '12:45', status: 'ON TIME', gate: 'D3' },
+    { id: '5', flightNumber: 'LH411', airline: 'Lufthansa', destination: 'FRANKFURT', scheduledTime: '13:20', status: 'ON TIME', gate: 'E9' },
+    { id: '6', flightNumber: 'AF123', airline: 'Air France', destination: 'NICE', scheduledTime: '14:10', status: 'ON TIME', gate: 'F2' },
+    { id: '7', flightNumber: 'NH009', airline: 'ANA', destination: 'TOKYO', scheduledTime: '15:00', status: 'BOARDING', gate: 'G11' },
+    { id: '8', flightNumber: 'EK201', airline: 'Emirates', destination: 'DUBAI', scheduledTime: '16:30', status: 'ON TIME', gate: 'H4' },
   ],
   'LAX': [
-    { id: '1', flightNumber: 'DL222', airline: 'Delta', destination: 'New York', scheduledTime: '09:30', status: 'Boarding', gate: 'A5' },
-    { id: '2', flightNumber: 'UA501', airline: 'United', destination: 'Chicago', scheduledTime: '10:45', status: 'On Time', gate: 'B9' },
-    { id: '3', flightNumber: 'AA333', airline: 'American', destination: 'Dallas', scheduledTime: '11:30', status: 'Delayed', gate: 'C2' },
+    { id: '1', flightNumber: 'DL222', airline: 'Delta', destination: 'NEW YORK', scheduledTime: '09:30', status: 'BOARDING', gate: 'A5' },
+    { id: '2', flightNumber: 'UA501', airline: 'United', destination: 'CHICAGO', scheduledTime: '10:45', status: 'ON TIME', gate: 'B9' },
+    { id: '3', flightNumber: 'AA333', airline: 'American', destination: 'DALLAS', scheduledTime: '11:30', status: 'DELAYED', gate: 'C2' },
+    { id: '4', flightNumber: 'AS456', airline: 'Alaska', destination: 'SEATTLE', scheduledTime: '12:15', status: 'ON TIME', gate: 'D7' },
+    { id: '5', flightNumber: 'WN789', airline: 'Southwest', destination: 'PHOENIX', scheduledTime: '13:45', status: 'ON TIME', gate: 'E3' },
   ],
-  // Add more airports and their flights as needed
+  'LHR': [
+    { id: '1', flightNumber: 'BA456', airline: 'British Airways', destination: 'SINGAPORE', scheduledTime: '10:00', status: 'ON TIME', gate: 'A10' },
+    { id: '2', flightNumber: 'VS789', airline: 'Virgin Atlantic', destination: 'NEW YORK', scheduledTime: '11:30', status: 'BOARDING', gate: 'B22' },
+    { id: '3', flightNumber: 'LH654', airline: 'Lufthansa', destination: 'MUNICH', scheduledTime: '12:15', status: 'ON TIME', gate: 'C5' },
+    { id: '4', flightNumber: 'AF321', airline: 'Air France', destination: 'PARIS', scheduledTime: '13:00', status: 'ON TIME', gate: 'D12' },
+  ],
+  'CDG': [
+    { id: '1', flightNumber: 'AF100', airline: 'Air France', destination: 'NEW YORK', scheduledTime: '09:45', status: 'BOARDING', gate: 'K7' },
+    { id: '2', flightNumber: 'AF200', airline: 'Air France', destination: 'TOKYO', scheduledTime: '11:20', status: 'ON TIME', gate: 'L14' },
+    { id: '3', flightNumber: 'EK077', airline: 'Emirates', destination: 'DUBAI', scheduledTime: '13:10', status: 'ON TIME', gate: 'M3' },
+    { id: '4', flightNumber: 'BA308', airline: 'British Airways', destination: 'LONDON', scheduledTime: '14:30', status: 'DELAYED', gate: 'N9' },
+  ],
+  'NRT': [
+    { id: '1', flightNumber: 'NH111', airline: 'ANA', destination: 'LOS ANGELES', scheduledTime: '10:15', status: 'ON TIME', gate: '41' },
+    { id: '2', flightNumber: 'JL002', airline: 'JAL', destination: 'SAN FRANCISCO', scheduledTime: '11:45', status: 'BOARDING', gate: '52' },
+    { id: '3', flightNumber: 'UA890', airline: 'United', destination: 'CHICAGO', scheduledTime: '13:30', status: 'ON TIME', gate: '63' },
+    { id: '4', flightNumber: 'SQ012', airline: 'Singapore Airlines', destination: 'SINGAPORE', scheduledTime: '15:00', status: 'ON TIME', gate: '74' },
+  ],
 };
 
 const DepartureBoard: React.FC = () => {
   const [selectedAirport, setSelectedAirport] = useState('JFK');
   const [flights, setFlights] = useState<Flight[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState(new Date());
-  const [viewMode, setViewMode] = useState<'departures' | 'arrivals'>('departures');
 
   const fetchFlights = useCallback(() => {
     setIsLoading(true);
@@ -44,7 +65,6 @@ const DepartureBoard: React.FC = () => {
     // Simulate API fetch with a timeout
     setTimeout(() => {
       setFlights(mockFlights[selectedAirport] || []);
-      setLastUpdated(new Date());
       setIsLoading(false);
     }, 800);
     
@@ -62,107 +82,105 @@ const DepartureBoard: React.FC = () => {
 
   useEffect(() => {
     fetchFlights();
-  }, [selectedAirport, viewMode, fetchFlights]);
+  }, [selectedAirport, fetchFlights]);
 
   const handleRefresh = () => {
     fetchFlights();
   };
 
-  const formatLastUpdated = () => {
-    return lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full max-w-6xl">
-      {/* Header with airport selector */}
-      <div className="flex flex-col sm:flex-row justify-between items-center w-full mb-4">
-        <AirportSelector 
-          airports={airports} 
-          selectedAirport={selectedAirport} 
-          onSelectAirport={setSelectedAirport} 
-        />
-        
-        <div className="flex space-x-4 mb-4 sm:mb-0">
-          <button
-            onClick={() => setViewMode('departures')}
-            className={`px-4 py-2 rounded-lg ${
-              viewMode === 'departures' 
-                ? 'bg-amber-500 text-black' 
-                : 'bg-neutral-700 text-white hover:bg-neutral-600'
-            }`}
-          >
-            Departures
-          </button>
-          <button
-            onClick={() => setViewMode('arrivals')}
-            className={`px-4 py-2 rounded-lg ${
-              viewMode === 'arrivals' 
-                ? 'bg-amber-500 text-black' 
-                : 'bg-neutral-700 text-white hover:bg-neutral-600'
-            }`}
-          >
-            Arrivals
-          </button>
-        </div>
-      </div>
-
-      {/* Departure Board */}
-      <div className="bg-neutral-800 rounded-xl overflow-hidden shadow-lg w-full">
-        <div className="bg-neutral-700 text-white p-6 text-center">
-          <div className="text-3xl font-bold mb-2">
-            {selectedAirport} {viewMode === 'departures' ? 'Departures' : 'Arrivals'}
-          </div>
-          <div className="text-amber-400 text-lg">
-            {isLoading ? 'Updating...' : `Last updated: ${formatLastUpdated()}`}
+    <div className="w-full max-w-5xl">
+      {/* Main Departure Board */}
+      <div className="overflow-hidden w-full dot-matrix" style={{ 
+        backgroundColor: '#0a0a0a', 
+        border: '8px solid #1a1a1a',
+        boxShadow: 'inset 0 0 20px rgba(0,0,0,0.8)'
+      }}>
+        {/* Header with title and clock */}
+        <div className="relative p-6 pb-4" style={{ backgroundColor: '#000000' }}>
+          <div className="flex justify-between items-start">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 flex items-center justify-center" style={{ backgroundColor: '#ffb700', color: '#000' }}>
+                <span className="text-xl">✈</span>
+              </div>
+              <h1 className="led-text" style={{ 
+                color: '#ffffff', 
+                fontSize: '28px',
+                textShadow: '0 0 8px #ffffff',
+                letterSpacing: '0.1em'
+              }}>
+                DEPARTURES
+              </h1>
+            </div>
+            
+            <div className="absolute right-6 top-6">
+              <DigitalClock />
+            </div>
           </div>
         </div>
         
-        {/* Table Header */}
-        <div className="grid grid-cols-5 w-full bg-neutral-900 py-3 text-neutral-400 font-medium text-sm border-b border-neutral-700">
-          <div className="px-1">FLIGHT</div>
-          <div className="px-1">TIME</div>
-          <div className="px-1">{viewMode === 'departures' ? 'DESTINATION' : 'ORIGIN'}</div>
-          <div className="px-1">GATE</div>
-          <div className="px-1">STATUS</div>
+        {/* Column Headers */}
+        <div className="grid grid-cols-[1fr_2fr_1fr_2fr] gap-4 px-6 py-2" style={{ backgroundColor: '#000000' }}>
+          <div className="led-text" style={{ color: '#ffb700', fontSize: '11px' }}>time</div>
+          <div className="led-text" style={{ color: '#ffb700', fontSize: '11px' }}>to</div>
+          <div className="led-text" style={{ color: '#ffb700', fontSize: '11px' }}>gate</div>
+          <div className="led-text" style={{ color: '#ffb700', fontSize: '11px' }}>remarks</div>
         </div>
         
         {/* Flight Rows */}
-        <div className="max-h-96 overflow-y-auto w-full">
+        <div className="overflow-y-auto" style={{ 
+          backgroundColor: '#000000',
+          maxHeight: '400px',
+          minHeight: '300px'
+        }}>
           {isLoading ? (
-            <div className="p-12 text-center text-neutral-400">
+            <div className="p-12 text-center" style={{ color: '#666' }}>
               <div className="animate-spin mb-4 mx-auto">
                 <FiRefreshCw className="h-8 w-8" />
               </div>
-              <p>Loading flight information...</p>
+              <p className="led-text" style={{ fontSize: '10px' }}>LOADING...</p>
             </div>
           ) : flights.length > 0 ? (
             flights.map((flight, index) => (
               <FlightRow key={flight.id} flight={flight} index={index} />
             ))
           ) : (
-            <div className="p-12 text-center text-neutral-400">
-              No flights found for this airport.
+            <div className="p-12 text-center led-text" style={{ color: '#666', fontSize: '10px' }}>
+              NO FLIGHTS FOUND
             </div>
           )}
         </div>
+        
+        {/* Footer with date */}
+        <div className="flex justify-end px-6 py-4" style={{ backgroundColor: '#000000' }}>
+          <div className="led-text" style={{ color: '#ffffff', fontSize: '12px', letterSpacing: '0.15em' }}>
+            {new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}
+          </div>
+        </div>
       </div>
       
-      {/* Refresh Button */}
-      <div className="flex justify-end mt-4 w-full">
+      {/* Controls below board */}
+      <div className="flex justify-between items-center mt-4 w-full">
+        <AirportSelector 
+          airports={airports} 
+          selectedAirport={selectedAirport} 
+          onSelectAirport={setSelectedAirport} 
+        />
+        
         <button
           onClick={handleRefresh}
           disabled={isLoading}
-          className="flex items-center gap-2 text-neutral-400 hover:text-white text-sm font-medium transition duration-200 disabled:text-neutral-600"
+          className="flex items-center gap-2 led-text px-4 py-2"
+          style={{
+            color: isLoading ? '#333' : '#666',
+            backgroundColor: '#1a1a1a',
+            border: '2px solid #333',
+            fontSize: '8px'
+          }}
         >
-          <FiRefreshCw className={`text-lg ${isLoading ? 'animate-spin' : ''}`} />
-          Refresh
+          <FiRefreshCw className={`text-sm ${isLoading ? 'animate-spin' : ''}`} />
+          REFRESH
         </button>
-      </div>
-      
-      {/* Footer with information */}
-      <div className="mt-6 text-center text-neutral-500 text-sm">
-        <p>Data refreshes automatically every few minutes. Click refresh for the latest information.</p>
-        <p className="mt-2">NOTE: Currently using mock data. API integration coming soon.</p>
       </div>
     </div>
   );

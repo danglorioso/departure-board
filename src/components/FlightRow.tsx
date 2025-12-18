@@ -1,6 +1,5 @@
 // components/FlightRow.tsx
 import React from 'react';
-import SplitFlapDisplay from './SplitFlapDisplay';
 
 export interface Flight {
   id: string;
@@ -17,45 +16,34 @@ interface FlightRowProps {
   index: number;
 }
 
-const FlightRow: React.FC<FlightRowProps> = ({ flight, index }) => {
-  const delayBase = index * 300; // Stagger the animations
+const FlightRow: React.FC<FlightRowProps> = ({ flight }) => {
+  // Determine status color for LED display
+  const getStatusColor = (status: string) => {
+    const statusLower = status.toLowerCase();
+    if (statusLower.includes('boarding')) return '#00ff00'; // Green
+    if (statusLower.includes('cancel')) return '#ff0000'; // Red
+    if (statusLower.includes('delay')) return '#ffff00'; // Yellow
+    if (statusLower.includes('on time')) return '#ffff00'; // Yellow
+    if (statusLower.includes('gate open')) return '#ffff00'; // Yellow
+    return '#ffb700'; // Default amber
+  };
+  
+  const statusColor = getStatusColor(flight.status);
+  const gateColor = '#ffff00';
   
   return (
-    <div className={`grid grid-cols-5 w-full py-4 ${index % 2 === 0 ? 'bg-neutral-800' : 'bg-neutral-900'}`}>
-      <div className="px-1 w-full">
-        <SplitFlapDisplay 
-          text={flight.flightNumber} 
-          delay={delayBase} 
-          charCount={7} 
-        />
+    <div className="grid grid-cols-[1fr_2fr_1fr_2fr] gap-4 px-6 py-2" style={{ backgroundColor: '#000000' }}>
+      <div className="led-text" style={{ color: '#ffb700', fontSize: '14px', letterSpacing: '0.05em' }}>
+        {flight.scheduledTime}
       </div>
-      <div className="px-1 w-full">
-        <SplitFlapDisplay 
-          text={flight.scheduledTime} 
-          delay={delayBase + 100} 
-          charCount={7} 
-        />
+      <div className="led-text" style={{ color: '#ffb700', fontSize: '14px', letterSpacing: '0.05em' }}>
+        {flight.destination.toUpperCase()}
       </div>
-      <div className="px-1 w-full">
-        <SplitFlapDisplay 
-          text={flight.destination.toUpperCase()} 
-          delay={delayBase + 200} 
-          charCount={15} 
-        />
+      <div className="led-text" style={{ color: gateColor, fontSize: '14px', letterSpacing: '0.05em', textShadow: `0 0 6px ${gateColor}` }}>
+        {flight.gate || '--'}
       </div>
-      <div className="px-1 w-full">
-        <SplitFlapDisplay 
-          text={flight.gate || 'TBD'} 
-          delay={delayBase + 300} 
-          charCount={5} 
-        />
-      </div>
-      <div className="px-1 w-full">
-        <SplitFlapDisplay 
-          text={flight.status.toUpperCase()} 
-          delay={delayBase + 400} 
-          charCount={13} 
-        />
+      <div className="led-text" style={{ color: statusColor, fontSize: '14px', letterSpacing: '0.05em', textShadow: `0 0 6px ${statusColor}` }}>
+        {flight.status.toUpperCase()}
       </div>
     </div>
   );

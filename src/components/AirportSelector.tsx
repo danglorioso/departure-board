@@ -22,10 +22,15 @@ const AirportSelector: React.FC<AirportSelectorProps> = ({
       <select 
         value={selectedAirport}
         onChange={(e) => onSelectAirport(e.target.value)}
-        className="bg-neutral-700 text-white py-2 px-4 rounded-lg border border-neutral-600 focus:outline-none focus:ring-2 focus:ring-amber-500"
+        className="led-text text-sm py-2 px-4 focus:outline-none"
+        style={{
+          backgroundColor: '#1a1a1a',
+          color: '#ffb700',
+          border: '2px solid #333',
+        }}
       >
         {airports.map((airport) => (
-          <option key={airport.code} value={airport.code}>
+          <option key={airport.code} value={airport.code} style={{ backgroundColor: '#1a1a1a', color: '#ffb700' }}>
             {airport.name} ({airport.code})
           </option>
         ))}
